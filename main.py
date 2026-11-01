@@ -100,6 +100,11 @@ def interactive_mode() -> None:
         if not raw:
             continue
 
+        # 自動移除使用者誤貼的 >>> 提示符號
+        raw = raw.lstrip("> ").strip()
+        if not raw:
+            continue
+
         args = raw.split()
         if not run_command(args):
             break
