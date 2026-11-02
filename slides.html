@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>天氣 & 匯率查詢小工具 — 期中專題</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    body { margin: 0; padding: 0; background: #0f172a; font-family: 'Segoe UI', sans-serif; }
+    .slide { display: none; width: 100%; min-height: 100vh; box-sizing: border-box; }
+    .slide.active { display: flex; }
+    .code-block {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 14px;
+      color: #7dd3fc;
+      line-height: 1.6;
+    }
+    .prompt { color: #a78bfa; }
+    .output { color: #86efac; }
+    .tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .progress-bar {
+      height: 3px;
+      background: #334155;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #38bdf8);
+      transition: width 0.4s ease;
+    }
+    .nav-btn {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { transform: scale(1.1); }
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1: 封面 ===== -->
+<div class="slide active flex-col items-center justify-center" id="slide-1">
+  <div class="flex flex-col items-center justify-center w-full min-h-screen px-12 py-16 text-center">
+
+    <!-- 圖示 -->
+    <div class="text-7xl mb-6">🌍</div>
+
+    <!-- 主標題 -->
+    <h1 class="text-5xl font-black mb-3 gradient-text">
+      天氣 & 匯率查詢小工具
+    </h1>
+    <p class="text-2xl text-slate-400 font-medium mb-2">
+      Weather & Exchange Rate Checker
+    </p>
+    <p class="text-slate-500 text-base mb-10">期中專題｜2026 年 11 月</p>
+
+    <!-- 功能標籤 -->
+    <div class="flex gap-3 mb-12 flex-wrap justify-center">
+      <span class="tag bg-indigo-900/60 text-indigo-300 border border-indigo-700">🌤️ 即時天氣</span>
+      <span class="tag bg-sky-900/60 text-sky-300 border border-sky-700">💱 即時匯率</span>
+      <span class="tag bg-emerald-900/60 text-emerald-300 border border-emerald-700">🐍 Python CLI</span>
+      <span class="tag bg-purple-900/60 text-purple-300 border border-purple-700">🔑 無需 API Key</span>
+    </div>
+
+    <!-- GitHub 連結 -->
+    <div class="card flex items-center gap-3 text-slate-300 text-sm">
+      <span class="text-2xl">🐙</span>
+      <span class="font-mono text-slate-400">github.com/</span><span class="font-mono text-white font-bold">411513008-arch/weather-rate-checker</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 2: 問題與解法 ===== -->
+<div class="slide flex-col items-center justify-center" id="slide-2">
+  <div class="flex flex-col w-full min-h-screen px-16 py-16 justify-center">
+    <div class="text-slate-500 text-sm font-semibold mb-2 uppercase tracking-widest">問題與解法</div>
+    <h2 class="text-4xl font-bold text-white mb-10">為什麼要做這個？</h2>
+
+    <div class="grid grid-cols-2 gap-8 mb-8">
+      <!-- 問題 -->
+      <div class="card border-red-800/50">
+        <div class="text-2xl mb-3">😩 現有的痛點</div>
+        <ul class="text-slate-300 space-y-3 text-base">
+          <li class="flex items-start gap-2"><span class="text-red-400 mt-1">✗</span> 出國前要查天氣，要開瀏覽器搜尋等載入</li>
+          <li class="flex items-start gap-2"><span class="text-red-400 mt-1">✗</span> 查匯率要開另一個網站，再換算金額</li>
+          <li class="flex items-start gap-2"><span class="text-red-400 mt-1">✗</span> 每次都要重複同樣的操作，很浪費時間</li>
+        </ul>
+      </div>
+      <!-- 解法 -->
+      <div class="card border-emerald-800/50">
+        <div class="text-2xl mb-3">✅ 我們的解法</div>
+        <ul class="text-slate-300 space-y-3 text-base">
+          <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">✓</span> 在終端機輸入城市名稱，即時顯示天氣</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">✓</span> 輸入兩個貨幣代碼，秒顯示匯率與換算</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">✓</span> 一個工具解決兩個需求，快速又方便</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 使用者 -->
+    <div class="card">
+      <div class="text-slate-400 text-sm mb-3 font-semibold">🎯 目標使用者</div>
+      <div class="flex gap-6 flex-wrap">
+        <span class="flex items-center gap-2 text-slate-300"><span class="text-xl">✈️</span> 出國旅遊者</span>
+        <span class="flex items-center gap-2 text-slate-300"><span class="text-xl">💼</span> 商務人士</span>
+        <span class="flex items-center gap-2 text-slate-300"><span class="text-xl">👩‍💻</span> 開發者／學生</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: 技術說明 ===== -->
+<div class="slide flex-col items-center justify-center" id="slide-3">
+  <div class="flex flex-col w-full min-h-screen px-16 py-16 justify-center">
+    <div class="text-slate-500 text-sm font-semibold mb-2 uppercase tracking-widest">技術架構</div>
+    <h2 class="text-4xl font-bold text-white mb-10">怎麼做的？</h2>
+
+    <div class="grid grid-cols-3 gap-6 mb-8">
+      <div class="card text-center">
+        <div class="text-4xl mb-3">🐍</div>
+        <div class="text-white font-bold mb-1">Python 3</div>
+        <div class="text-slate-400 text-sm">主要語言</div>
+      </div>
+      <div class="card text-center">
+        <div class="text-4xl mb-3">🌤️</div>
+        <div class="text-white font-bold mb-1">Open-Meteo API</div>
+        <div class="text-slate-400 text-sm">天氣資料｜免費無需 Key</div>
+      </div>
+      <div class="card text-center">
+        <div class="text-4xl mb-3">💱</div>
+        <div class="text-white font-bold mb-1">Open Exchange Rates</div>
+        <div class="text-slate-400 text-sm">匯率資料｜免費無需 Key</div>
+      </div>
+    </div>
+
+    <!-- 程式結構 -->
+    <div class="card">
+      <div class="text-slate-400 text-sm mb-4 font-semibold">📁 程式結構</div>
+      <div class="flex items-start gap-4 text-sm font-mono">
+        <div class="space-y-2 text-slate-300">
+          <div><span class="text-yellow-400">main.py</span> <span class="text-slate-500">← 主程式，互動 & 命令列雙模式</span></div>
+          <div class="pl-4"><span class="text-sky-400">weather.py</span> <span class="text-slate-500">← 城市地理編碼 → 天氣查詢 → 格式化輸出</span></div>
+          <div class="pl-4"><span class="text-emerald-400">exchange.py</span> <span class="text-slate-500">← 貨幣驗證 → 匯率查詢 → 換算輸出</span></div>
+          <div><span class="text-slate-500">requirements.txt</span> <span class="text-slate-600">← 只需要 requests 一個套件</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: DEMO ===== -->
+<div class="slide flex-col items-center justify-center" id="slide-4">
+  <div class="flex flex-col w-full min-h-screen px-16 py-16 justify-center">
+    <div class="text-slate-500 text-sm font-semibold mb-2 uppercase tracking-widest">實際展示</div>
+    <h2 class="text-4xl font-bold text-white mb-8">Demo</h2>
+
+    <div class="grid grid-cols-2 gap-6">
+      <!-- 天氣 -->
+      <div>
+        <div class="text-slate-400 text-sm mb-2 font-semibold">🌤️ 查詢東京天氣</div>
+        <div class="code-block text-sm">
+          <div><span class="prompt">>>> </span>weather Tokyo</div>
+          <br>
+          <div class="text-slate-500">========================================</div>
+          <div><span class="output">  📍 東京，日本</span></div>
+          <div><span class="output">  🕐 2026-11-01T16:00</span></div>
+          <div class="text-slate-500">========================================</div>
+          <div><span class="output">  天氣狀況：⛅ 部分多雲</span></div>
+          <div><span class="output">  🌡️  氣溫：19.3 °C</span></div>
+          <div><span class="output">  🌡️  體感溫度：18.8 °C</span></div>
+          <div><span class="output">  💧 相對濕度：54 %</span></div>
+          <div><span class="output">  💨 風速：3.4 km/h</span></div>
+          <div class="text-slate-500">========================================</div>
+        </div>
+      </div>
+
+      <!-- 匯率 -->
+      <div>
+        <div class="text-slate-400 text-sm mb-2 font-semibold">💱 查詢美元換台幣</div>
+        <div class="code-block text-sm">
+          <div><span class="prompt">>>> </span>rate USD TWD 100</div>
+          <br>
+          <div class="text-slate-500">========================================</div>
+          <div><span class="output">  💱 匯率資訊</span></div>
+          <div><span class="output">  📅 Sun, 01 Nov 2026</span></div>
+          <div class="text-slate-500">========================================</div>
+          <div><span class="output">  USD (美元)</span></div>
+          <div><span class="output">    ↓</span></div>
+          <div><span class="output">  TWD (新台幣)</span></div>
+          <div><span class="output">  匯率：1 USD = 32.6103 TWD</span></div>
+          <div><span class="output">  換算：100 USD = 3261.03 TWD</span></div>
+          <div class="text-slate-500">========================================</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 card flex items-center gap-3">
+      <span class="text-2xl">💡</span>
+      <span class="text-slate-300 text-sm">支援全球 <strong class="text-white">170+ 種貨幣</strong>，城市名稱使用英文即可查詢全球任何地點天氣</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: 下一步 ===== -->
+<div class="slide flex-col items-center justify-center" id="slide-5">
+  <div class="flex flex-col w-full min-h-screen px-16 py-16 justify-center">
+    <div class="text-slate-500 text-sm font-semibold mb-2 uppercase tracking-widest">未來展望</div>
+    <h2 class="text-4xl font-bold text-white mb-10">下一步計畫</h2>
+
+    <div class="grid grid-cols-2 gap-5 mb-10">
+      <div class="card flex gap-4 items-start">
+        <span class="text-3xl">📅</span>
+        <div>
+          <div class="text-white font-bold mb-1">未來 7 天天氣預報</div>
+          <div class="text-slate-400 text-sm">加入每日最高/最低溫、降雨機率</div>
+        </div>
+      </div>
+      <div class="card flex gap-4 items-start">
+        <span class="text-3xl">📈</span>
+        <div>
+          <div class="text-white font-bold mb-1">歷史匯率折線圖</div>
+          <div class="text-slate-400 text-sm">用 matplotlib 視覺化過去 30 天匯率走勢</div>
+        </div>
+      </div>
+      <div class="card flex gap-4 items-start">
+        <span class="text-3xl">📱</span>
+        <div>
+          <div class="text-white font-bold mb-1">LINE / Telegram Bot 整合</div>
+          <div class="text-slate-400 text-sm">用傳訊息的方式查詢，不需開終端機</div>
+        </div>
+      </div>
+      <div class="card flex gap-4 items-start">
+        <span class="text-3xl">📦</span>
+        <div>
+          <div class="text-white font-bold mb-1">打包成 .exe 執行檔</div>
+          <div class="text-slate-400 text-sm">讓非開發者也能直接雙擊使用</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 結尾 -->
+    <div class="text-center mt-4">
+      <div class="text-6xl mb-4">🙏</div>
+      <div class="text-3xl font-bold text-white mb-2">謝謝聆聽</div>
+      <div class="font-mono text-slate-400 text-sm">github.com/411513008-arch/weather-rate-checker</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 導航 ===== -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 z-50">
+  <button onclick="prevSlide()" class="nav-btn w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center text-lg">‹</button>
+  <div class="flex gap-2" id="dots"></div>
+  <button onclick="nextSlide()" class="nav-btn w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center text-lg">›</button>
+</div>
+
+<!-- 投影片編號 -->
+<div class="fixed top-5 right-6 text-slate-500 text-sm font-mono" id="page-num"></div>
+
+<!-- 進度條 -->
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<script>
+  const TOTAL = 5;
+  let current = 1;
+
+  // 建立圓點
+  const dotsEl = document.getElementById('dots');
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'w-2 h-2 rounded-full transition-all cursor-pointer';
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+
+  function updateUI() {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      s.classList.toggle('active', i + 1 === current);
+    });
+    const dots = dotsEl.children;
+    for (let i = 0; i < dots.length; i++) {
+      dots[i].style.background = i + 1 === current ? '#6366f1' : '#334155';
+      dots[i].style.transform = i + 1 === current ? 'scale(1.4)' : 'scale(1)';
+    }
+    document.getElementById('page-num').textContent = `${current} / ${TOTAL}`;
+    document.getElementById('progress').style.width = `${(current / TOTAL) * 100}%`;
+  }
+
+  function goTo(n) { current = Math.min(Math.max(n, 1), TOTAL); updateUI(); }
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  // 鍵盤控制
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevSlide();
+  });
+
+  updateUI();
+</script>
+</body>
+</html>
